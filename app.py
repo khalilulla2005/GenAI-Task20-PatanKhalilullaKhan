@@ -6,7 +6,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Setup NLTK
-nltk.download('stopwords')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
 stop_words = set(stopwords.words('english'))
 
 # 1. Load & Understand Data
@@ -14,11 +17,13 @@ stop_words = set(stopwords.words('english'))
 def load_data():
     df = pd.read_csv('data/dataset.csv')
     df['text'] = df['text'].fillna('')
+    # Preprocessing
+    df['clean_text'] = df['text'].str.lower().replace(r'[^\w\s]', '', regex=True)
     return df
 
 df = load_data()
 
-st.title("🎬 Movie Recommendation System")
+st.title("🎬 Recommendation System")
 
 # Task 1: Displaying Dataset Info
 if st.checkbox("Show Dataset Info"):
@@ -28,38 +33,28 @@ if st.checkbox("Show Dataset Info"):
     st.write("### First 5 rows:")
     st.dataframe(df.head())
 
-# Task 2: Text Preprocessing
-def preprocess_text(text):
-    # Lowercase
-    text = text.lower()
-    # Remove punctuation
-    text = text.replace(r'[^\w\s]', '')
-    # Stopwords
-    words = text.split()
-    words = [w for w in words if w not in stop_words]
-    return ' '.join(words)
-
-df['clean_text'] = df['text'].apply(preprocess_text)
-
-# 3. Vectorization
-tfidf = TfidfVectorizer(max_features=5000, ngram_range=(1,2))
+# 2. Vectorization
+# Using 'text' as the item identifier/content
+tfidf = TfidfVectorizer(stop_words='english', max_features=5000, ngram_range=(1,2))
 tfidf_matrix = tfidf.fit_transform(df['clean_text'])
 cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
-# 4. Recommendation Logic
-def recommend(movie_title):
-    idx = df[df['title'] == movie_title].index[0]
+# 3. Recommendation Logic
+def recommend(item_text):
+    # Find index using the 'text' column
+    idx = df[df['text'] == item_text].index[0]
     sim_scores = list(enumerate(cosine_sim[idx]))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
     sim_scores = sim_scores[1:6] # Top 5
-    movie_indices = [i[0] for i in sim_scores]
-    return df['title'].iloc[movie_indices]
+    indices = [i[0] for i in sim_scores]
+    return df['text'].iloc[indices]
 
-# 5. Streamlit UI
-selected_item = st.selectbox("Select a movie:", df['title'].values)
+# 4. Streamlit UI
+# Use 'text' instead of 'title' as it is the available column
+selected_item = st.selectbox("Select an item:", df['text'].values)
 
 if st.button("Recommend"):
     recommendations = recommend(selected_item)
-    st.write("### Recommended for you:")
+    st.write("### Recommended similar items:")
     for item in recommendations:
         st.write(f"- {item}")
