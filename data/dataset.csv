@@ -1,0 +1,26 @@
+text,label
+"This product is amazing!!! I absolutely loved it.",positive
+"What a waste of money. Worst experience ever.",negative
+"The delivery was late, but the product is okay.",neutral
+"I am sooooo happy with my purchase. GR8 quality!",positive
+"u should not buy this, it's garbage.",negative
+"Highly recommended! Five stars.",positive
+"Okay product, but a bit overpriced.",neutral
+"My email is test@example.com for further queries.",neutral
+"Check out my website at https://example.com for more info.",neutral
+"This is <html><body>a great item</body></html>, really!",positive
+"I bought this for $50 and it's not worth it.",negative
+"Super fast shipping and great customer service.",positive
+"Doesn't work as expected. Returning it.",negative
+"It's decent, does the job.",neutral
+"Loved it! Best purchase this year.",positive
+"Total scam. Do not buy.",negative
+"Could be better. The design is weird.",neutral
+"Wow, just wow. Stunning quality.",positive
+"Broken after one use. Horrible.",negative
+"Average product. Not bad, not good.",neutral
+"It's okay for the price.",neutral
+"Very bad experience, seller ignored me.",negative
+"I am very satisfied with this.",positive
+"Useless item. Total waste.",negative
+"Great quality, fast delivery.",positive
